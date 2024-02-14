@@ -7,13 +7,12 @@ export const isAuthenticated = async (req: express.Request , res: express.Respon
   const token = req.header('Authorization')?.replace('Bearer ', '');
 
   if (!token) {
-    return res.status(401).send("A token is required for authentication");
+    return res.status(401).send({message: "A token is required for authentication"});
   }
   try {
     const decoded = jwt.verify(token, config.TOKEN_KEY);
-    req.user = decoded;
   } catch (err) {
-    return res.status(401).send("Invalid Token");
+    return res.status(401).send({message: "Invalid Token"});
   }
   return next();
 };

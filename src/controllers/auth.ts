@@ -25,18 +25,12 @@ export const register = async (req: express.Request, res: express.Response) => {
             email,
             password: await bcrypt.hash(password,16)
         })
-
-        // Create token
-    const token = jwt.sign(
-        { user_id: user._id, email },
-        process.env.TOKEN_KEY,
-        {
-          expiresIn: "6h",
-        }
-      );
-      // save user token
-      user.token = token;
-      res.status(201).json(user);
+      res.status(201).json({
+        message: 'Created User Account Successfully',
+        user:  { id: user._id,
+        name: user.name, 
+        email: user.email,}
+      });
     } catch (error) {
         return res.status(500).send('Somewthing went wrong')
     }

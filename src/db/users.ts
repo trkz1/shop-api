@@ -4,7 +4,8 @@ const UserSchema = new mongoose.Schema({
     name: {type: String, required: true},
     email: {type: String, unique: true,  lowercase: true, trim: true, required: true},
     password: {type: String, required: true, select: false},
-    token: {type: String}
+    token: {type: String},
+    orders: {type: mongoose.Types.ObjectId, ref: "Order"}
 })
 
 export const UserModel = mongoose.model('User',UserSchema);

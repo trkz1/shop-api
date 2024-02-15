@@ -1,21 +1,45 @@
-import { createProduct, deleteProduct, getAllProducts, getAvailableProducts, getProdcutById, updateProduct } from '../db/products';
+import { ProductModel, createProduct, deleteProduct, getAllProducts, getAvailableProducts, getProdcutById, updateProduct } from '../db/products';
 import express from 'express';
 import { validationResult } from 'express-validator';
 
 
 export const getAll = async (req: express.Request, res: express.Response) => {
+
+    const { page =  1, limit = 10 } = req.query;
+
+    let pageNumber = page as number < 1  ? 1 : page
+
     try {
-      const products = await getAllProducts.clone();
-      return res.status(200).send(products)
+      const products = await getAllProducts.clone()
+      .limit(limit as number * 1).skip((pageNumber as number - 1) * (limit as number))
+      .exec();
+      const count = await ProductModel.countDocuments()
+      return res.status(200).send({products: products,
+        totalPages: Math.ceil(count / (limit as number)),
+        currentPage: pageNumber})
     } catch (error) {
         return res.status(500).send({message: 'Somewthing went wrong'})
     }
 }
 
 export const getAvailable = async (req: express.Request, res: express.Response) => {
+
+    const { page =  1, limit = 10 } = req.query;
+
+    let pageNumber = page as number < 1  ? 1 : page
+
     try {
       const products = await getAvailableProducts
-      return res.status(200).send(products)
+      .clone()
+      .limit(limit as number * 1)
+      .skip((pageNumber as number - 1) * (limit as number))
+      .exec();
+      const count = await ProductModel.countDocuments()
+      return res.status(200).send({
+        products: products,
+        totalPages: Math.ceil(count / (limit as number)),
+        currentPage: pageNumber
+    })
     } catch (error) {
         return res.status(500).send({message: 'Somewthing went wrong'})
     }

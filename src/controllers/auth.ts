@@ -73,6 +73,6 @@ export const login = async (req: express.Request, res: express.Response) => {
           return res.status(401).send({message: "Invalid Credentials"});
         }
       } catch (err) {
-        console.log(err);
+        return res.status(500).send({message: 'Somewthing went wrong'})
       }
 }
